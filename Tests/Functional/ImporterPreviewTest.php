@@ -32,7 +32,6 @@ use Cobweb\ExternalImport\Testing\FunctionalTestCaseWithDatabaseTools;
 use Cobweb\ExternalImport\Transformation\ImageTransformation;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -61,7 +60,6 @@ class ImporterPreviewTest extends FunctionalTestCaseWithDatabaseTools
         parent::setUp();
         try {
             $this->initializeBackendUser();
-            Bootstrap::initializeLanguageObject();
 
             $this->subject = GeneralUtility::makeInstance(Importer::class);
             $this->subject->setTestMode(true);

@@ -27,7 +27,6 @@ use Cobweb\ExternalImport\Validator\ValidationResult;
 use Cobweb\Svconnector\Registry\ConnectorRegistry;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -48,7 +47,6 @@ class GeneralConfigurationValidatorTest extends FunctionalTestCaseWithDatabaseTo
     {
         parent::setUp();
         $this->initializeBackendUser();
-        Bootstrap::initializeLanguageObject();
 
         $this->subject = new GeneralConfigurationValidator(
             new ValidationResult(),

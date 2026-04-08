@@ -23,7 +23,6 @@ use Cobweb\ExternalImport\Validator\ColumnConfigurationValidator;
 use Cobweb\ExternalImport\Validator\ValidationResult;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -44,7 +43,6 @@ class ColumnConfigurationValidatorTest extends FunctionalTestCaseWithDatabaseToo
     {
         parent::setUp();
         $this->initializeBackendUser();
-        Bootstrap::initializeLanguageObject();
 
         $this->subject = new ColumnConfigurationValidator(new ValidationResult());
     }

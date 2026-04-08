@@ -17,12 +17,11 @@ declare(strict_types=1);
 
 namespace Cobweb\ExternalImport\Testing;
 
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class FunctionalTestCaseWithDatabaseTools extends FunctionalTestCase
@@ -34,7 +33,8 @@ class FunctionalTestCaseWithDatabaseTools extends FunctionalTestCase
     {
         $this->importCSVDataSet(__DIR__ . '/../../Tests/Functional/Fixtures/BackendUser.csv');
         $userRow = $this->getBackendUserRecordFromDatabase(1);
-        $backendUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
+        $backendUser = $this->setUpBackendUser(1);
+        $GLOBALS['LANG'] = $this->get(LanguageServiceFactory::class)->createFromUserPreferences($backendUser);
         $request = new ServerRequest('https://www.example.com/', null, 'php://input', [], ['HTTPS' => 'ON']);
         $session = $backendUser->createUserSession($userRow);
         $request = $request->withCookieParams(['be_typo_user' => $session->getJwt()]);
