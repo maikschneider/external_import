@@ -49,22 +49,13 @@ class CommandLineCallContext extends AbstractCallContext
     public function outputDebug(string $message, int $severity, $data): void
     {
         if ($this->importer->isVerbose()) {
-            switch ($severity) {
-                case -1:
-                    $status = 'OK';
-                    break;
-                case 1:
-                    $status = 'NOTICE';
-                    break;
-                case 2:
-                    $status = 'WARNING';
-                    break;
-                case 3:
-                    $status = 'ERROR';
-                    break;
-                default:
-                    $status = 'INFO';
-            }
+            $status = match ($severity) {
+                -1 => 'OK',
+                1 => 'NOTICE',
+                2 => 'WARNING',
+                3 => 'ERROR',
+                default => 'INFO',
+            };
             $this->io->writeln('-------------------------------------------------------------------');
             $this->io->writeln('DEBUG [' . $status . ']: ' . $message);
             $this->io->writeln(var_export($data, true));

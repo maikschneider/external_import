@@ -60,7 +60,7 @@ class TableTitleViewHelper extends AbstractViewHelper
             if ($title === null) {
                 $title = $tcaTitle;
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $title = $tcaTitle;
         }
         return $title;

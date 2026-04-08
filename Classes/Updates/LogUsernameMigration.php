@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace Cobweb\ExternalImport\Updates;
 
+use Doctrine\DBAL\Exception;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -103,7 +104,7 @@ final class LogUsernameMigration implements UpgradeWizardInterface, ChattyInterf
                     return true;
                 }
             }
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             return false;
         }
         return false;
@@ -139,7 +140,7 @@ final class LogUsernameMigration implements UpgradeWizardInterface, ChattyInterf
             foreach ($results as $result) {
                 $users[$result['uid']] = $result['username'];
             }
-        } catch (\Doctrine\DBAL\Exception) {
+        } catch (Exception) {
             // Nothing to do, let user list be empty
         }
         return $users;

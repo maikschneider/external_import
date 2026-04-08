@@ -55,7 +55,7 @@ class ImportCommand extends Command
     /**
      * Configures the command by setting its name, description and options.
      */
-    public function configure()
+    public function configure(): void
     {
         $this->setDescription('Runs an External Import synchronization, for one configuration or all of them.')
             ->setHelp(

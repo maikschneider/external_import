@@ -65,7 +65,7 @@ class ChildrenSorting
      * @param string $target Name of the sorting field
      * @param mixed $value Sorting value
      */
-    public function addSortingInformation(string $table, $id, string $target, $value): void
+    public function addSortingInformation(string $table, mixed $id, string $target, mixed $value): void
     {
         if (!isset($this->sortingInformation[$table])) {
             $this->sortingInformation[$table] = [];
@@ -82,7 +82,7 @@ class ChildrenSorting
      * @param mixed $oldId Old id of the child record (could have been a temporary key)
      * @param int $id Final id of the child record
      */
-    public function replaceId(string $table, $oldId, int $id): void
+    public function replaceId(string $table, mixed $oldId, int $id): void
     {
         if (isset($this->sortingInformation[$table][$oldId])) {
             $this->sortingInformation[$table][$id] = $this->sortingInformation[$table][$oldId];

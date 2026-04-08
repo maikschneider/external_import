@@ -57,7 +57,7 @@ class StepUtility
                 $validatedConfiguration['class']
             );
             return $currentSteps;
-        } catch (InvalidCustomStepConfiguration $e) {
+        } catch (InvalidCustomStepConfiguration) {
             return $currentSteps;
         }
     }
@@ -154,7 +154,7 @@ class StepUtility
                     1500830527
                 );
             }
-        } catch (\InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException) {
             throw new InvalidCustomStepConfiguration(
                 sprintf(
                     'Custom step class could not be instantiated (value received: %s)',

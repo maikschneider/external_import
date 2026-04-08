@@ -16,7 +16,6 @@ namespace Cobweb\ExternalImport;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
 use Cobweb\ExternalImport\Context\AbstractCallContext;
 use Cobweb\ExternalImport\Domain\Model\Configuration;
 use Cobweb\ExternalImport\Domain\Model\Data;
@@ -28,6 +27,17 @@ use Cobweb\ExternalImport\Event\ChangeConfigurationBeforeRunEvent;
 use Cobweb\ExternalImport\Exception\InvalidPreviewStepException;
 use Cobweb\ExternalImport\Exception\NoConfigurationException;
 use Cobweb\ExternalImport\Step\AbstractStep;
+use Cobweb\ExternalImport\Step\CheckPermissionsStep;
+use Cobweb\ExternalImport\Step\ClearCacheStep;
+use Cobweb\ExternalImport\Step\ConnectorCallbackStep;
+use Cobweb\ExternalImport\Step\HandleDataStep;
+use Cobweb\ExternalImport\Step\ReadDataStep;
+use Cobweb\ExternalImport\Step\ReportStep;
+use Cobweb\ExternalImport\Step\StoreDataStep;
+use Cobweb\ExternalImport\Step\TransformDataStep;
+use Cobweb\ExternalImport\Step\ValidateConfigurationStep;
+use Cobweb\ExternalImport\Step\ValidateConnectorStep;
+use Cobweb\ExternalImport\Step\ValidateDataStep;
 use Cobweb\ExternalImport\Utility\ReportingUtility;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerAwareInterface;
@@ -57,29 +67,9 @@ class Importer implements LoggerAwareInterface
     protected array $messages = [];
 
     /**
-     * @var ConfigurationRepository
-     */
-    protected ConfigurationRepository $configurationRepository;
-
-    /**
      * @var Configuration|null Full External Import configuration
      */
     protected ?Configuration $externalConfiguration = null;
-
-    /**
-     * @var ReportingUtility Utility for reporting after import
-     */
-    protected ReportingUtility $reportingUtility;
-
-    /**
-     * @var UidRepository
-     */
-    protected UidRepository $uidRepository;
-
-    /**
-     * @var TemporaryKeyRepository
-     */
-    protected TemporaryKeyRepository $temporaryKeyRepository;
 
     /**
      * @var int|null Externally enforced id of a page where the records should be stored (overrides "pid", used for testing)
@@ -141,31 +131,31 @@ class Importer implements LoggerAwareInterface
      * @var array List of default steps for the synchronize data process
      */
     public const SYNCHRONYZE_DATA_STEPS = [
-        Step\CheckPermissionsStep::class,
-        Step\ValidateConfigurationStep::class,
-        Step\ValidateConnectorStep::class,
-        Step\ReadDataStep::class,
-        Step\HandleDataStep::class,
-        Step\ValidateDataStep::class,
-        Step\TransformDataStep::class,
-        Step\StoreDataStep::class,
-        Step\ClearCacheStep::class,
-        Step\ConnectorCallbackStep::class,
-        Step\ReportStep::class,
+        CheckPermissionsStep::class,
+        ValidateConfigurationStep::class,
+        ValidateConnectorStep::class,
+        ReadDataStep::class,
+        HandleDataStep::class,
+        ValidateDataStep::class,
+        TransformDataStep::class,
+        StoreDataStep::class,
+        ClearCacheStep::class,
+        ConnectorCallbackStep::class,
+        ReportStep::class,
     ];
 
     /**
      * @var array List of default steps for the import data process
      */
     public const IMPORT_DATA_STEPS = [
-        Step\CheckPermissionsStep::class,
-        Step\ValidateConfigurationStep::class,
-        Step\HandleDataStep::class,
-        Step\ValidateDataStep::class,
-        Step\TransformDataStep::class,
-        Step\StoreDataStep::class,
-        Step\ClearCacheStep::class,
-        Step\ReportStep::class,
+        CheckPermissionsStep::class,
+        ValidateConfigurationStep::class,
+        HandleDataStep::class,
+        ValidateDataStep::class,
+        TransformDataStep::class,
+        StoreDataStep::class,
+        ClearCacheStep::class,
+        ReportStep::class,
     ];
 
     /**
@@ -174,18 +164,16 @@ class Importer implements LoggerAwareInterface
      * @throws \TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException
      */
     public function __construct(
-        ConfigurationRepository $configurationRepository,
-        ReportingUtility $reportingUtility,
-        UidRepository $uidRepository,
-        TemporaryKeyRepository $temporaryKeyRepository,
+        protected ConfigurationRepository $configurationRepository,
+        /**
+         * @var ReportingUtility Utility for reporting after import
+         */
+        protected ReportingUtility $reportingUtility,
+        protected UidRepository $uidRepository,
+        protected TemporaryKeyRepository $temporaryKeyRepository,
         ExtensionConfiguration $extensionConfiguration,
         protected EventDispatcherInterface $eventDispatcher
     ) {
-        $this->configurationRepository = $configurationRepository;
-        $this->reportingUtility = $reportingUtility;
-        $this->uidRepository = $uidRepository;
-        $this->temporaryKeyRepository = $temporaryKeyRepository;
-
         $this->extensionConfiguration = $extensionConfiguration->get(
             'external_import'
         );
@@ -426,7 +414,7 @@ class Importer implements LoggerAwareInterface
      *
      * @return Configuration|null
      */
-    public function getExternalConfiguration(): ?Domain\Model\Configuration
+    public function getExternalConfiguration(): ?Configuration
     {
         return $this->externalConfiguration;
     }
@@ -485,37 +473,28 @@ class Importer implements LoggerAwareInterface
                 $message
             );
             // Match devlog severities: 0 is info, 1 is notice, 2 is warning, 3 is fatal error, -1 is "OK" message
-            switch ($severity) {
-                case 0:
-                    $this->logger->info(
-                        $message,
-                        $data
-                    );
-                    break;
-                case 1:
-                    $this->logger->notice(
-                        $message,
-                        $data
-                    );
-                    break;
-                case 2:
-                    $this->logger->warning(
-                        $message,
-                        $data
-                    );
-                    break;
-                case 3:
-                    $this->logger->error(
-                        $message,
-                        $data
-                    );
-                    break;
-                default:
-                    $this->logger->debug(
-                        $message,
-                        $data
-                    );
-            }
+            match ($severity) {
+                0 => $this->logger->info(
+                    $message,
+                    $data
+                ),
+                1 => $this->logger->notice(
+                    $message,
+                    $data
+                ),
+                2 => $this->logger->warning(
+                    $message,
+                    $data
+                ),
+                3 => $this->logger->error(
+                    $message,
+                    $data
+                ),
+                default => $this->logger->debug(
+                    $message,
+                    $data
+                ),
+            };
         }
         // Push the debug data to the call context for special display, if needed (e.g. the command-line controller)
         if ($this->callContext !== null) {
@@ -597,10 +576,8 @@ class Importer implements LoggerAwareInterface
 
     /**
      * Forces the storage pid for imported records.
-     *
-     * @param mixed $pid
      */
-    public function setForcedStoragePid($pid): void
+    public function setForcedStoragePid(mixed $pid): void
     {
         $this->forcedStoragePid = (int)$pid;
     }
@@ -769,10 +746,8 @@ class Importer implements LoggerAwareInterface
 
     /**
      * Sets the preview data.
-     *
-     * @param mixed $previewData
      */
-    public function setPreviewData($previewData): void
+    public function setPreviewData(mixed $previewData): void
     {
         $this->previewData = $previewData;
     }

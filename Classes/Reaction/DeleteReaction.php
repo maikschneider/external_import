@@ -150,7 +150,7 @@ class DeleteReaction extends AbstractReaction implements ReactionInterface
     /**
      * Delete the items designated in the payload
      *
-     * @throws \Cobweb\ExternalImport\Exception\NoConfigurationException
+     * @throws NoConfigurationException
      * @throws InvalidConfigurationException
      * @throws ReactionFailedException
      */
@@ -215,7 +215,7 @@ class DeleteReaction extends AbstractReaction implements ReactionInterface
                             );
                         }
                         $deletedItems++;
-                    } catch (DeletedRecordException $e) {
+                    } catch (DeletedRecordException) {
                         // If the record was found, but is already deleted, simply count it as deleted
                         $deletedItems++;
                     }

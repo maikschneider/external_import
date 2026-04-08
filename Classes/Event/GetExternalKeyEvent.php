@@ -21,16 +21,7 @@ use Cobweb\ExternalImport\Domain\Model\Configuration;
 
 final class GetExternalKeyEvent
 {
-    protected array $data;
-    protected Configuration $configuration;
-    protected $externalKey;
-
-    public function __construct(array $data, Configuration $configuration, $externalKey = null)
-    {
-        $this->data = $data;
-        $this->configuration = $configuration;
-        $this->externalKey = $externalKey;
-    }
+    public function __construct(protected array $data, protected Configuration $configuration, protected $externalKey = null) {}
 
     public function getData(): array
     {

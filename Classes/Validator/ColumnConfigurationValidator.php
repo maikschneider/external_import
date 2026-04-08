@@ -47,15 +47,7 @@ class ColumnConfigurationValidator
         'xmlValue',
     ];
 
-    /**
-     * @var ValidationResult
-     */
-    protected ValidationResult $results;
-
-    public function __construct(ValidationResult $result)
-    {
-        $this->results = $result;
-    }
+    public function __construct(protected ValidationResult $results) {}
 
     /**
      * Validates the given configuration.
@@ -150,10 +142,8 @@ class ColumnConfigurationValidator
 
     /**
      * Validates the "children" property.
-     *
-     * @param mixed $childrenConfiguration
      */
-    public function validateChildrenProperty($childrenConfiguration): void
+    public function validateChildrenProperty(mixed $childrenConfiguration): void
     {
         // Issue error right away if structure is not an array
         if (!is_array($childrenConfiguration)) {

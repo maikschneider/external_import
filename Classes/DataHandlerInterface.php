@@ -31,5 +31,5 @@ interface DataHandlerInterface
      * @param Importer $importer Back-reference to the current Importer instance
      * @return array The handled data, as PHP array
      */
-    public function handleData($rawData, Importer $importer): array;
+    public function handleData(mixed $rawData, Importer $importer): array;
 }

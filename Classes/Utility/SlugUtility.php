@@ -34,21 +34,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class SlugUtility
 {
     /**
-     * @var Importer
-     */
-    protected Importer $importer;
-
-    /**
      * @var array
      */
     protected array $slugFieldNamesPerTable = [];
 
-    public function __construct(
-        Importer $importer,
-        protected TcaRepositoryInterface $tcaRepository
-    ) {
-        $this->importer = $importer;
-    }
+    public function __construct(protected Importer $importer, protected TcaRepositoryInterface $tcaRepository) {}
 
     /**
      * Generates and updates slugs for the given records of the given table.
@@ -174,17 +164,11 @@ class SlugUtility
      */
     public function resolveSlugFieldNames(string $tableName): array
     {
-        if (isset($this->slugFieldNamesPerTable[$tableName])) {
-            return $this->slugFieldNamesPerTable[$tableName];
-        }
-
-        return $this->slugFieldNamesPerTable[$tableName] = array_keys(
+        return $this->slugFieldNamesPerTable[$tableName] ?? ($this->slugFieldNamesPerTable[$tableName] = array_keys(
             array_filter(
                 $this->tcaRepository->getTca()[$tableName]['columns'] ?? [],
-                function (array $settings) {
-                    return ($settings['config']['type'] ?? null) === 'slug';
-                }
+                fn(array $settings) => ($settings['config']['type'] ?? null) === 'slug'
             )
-        );
+        ));
     }
 }

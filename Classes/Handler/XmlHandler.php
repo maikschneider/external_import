@@ -134,7 +134,7 @@ class XmlHandler implements DataHandlerInterface
                             $xPathObject
                         );
                     }
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     // Nothing to do, we ignore values that were not found
                 }
             }
@@ -367,7 +367,7 @@ class XmlHandler implements DataHandlerInterface
         foreach ($children as $child) {
             try {
                 $innerHTML .= $child->ownerDocument->saveXML($child);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 // Nothing to do
             }
         }
@@ -420,7 +420,7 @@ class XmlHandler implements DataHandlerInterface
                 try {
                     $value = $this->getValue($item, $configuration, $xPathObject);
                     $row[$key] = $value;
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     // Nothing to do, we ignore values that were not found
                 }
             }

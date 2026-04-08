@@ -16,13 +16,13 @@ namespace Cobweb\ExternalImport\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
 use Cobweb\ExternalImport\Domain\Model\ConfigurationKey;
 use Cobweb\ExternalImport\Domain\Repository\ConfigurationRepository;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
+use TYPO3\CMS\Scheduler\SchedulerManagementAction;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
@@ -188,19 +188,18 @@ class AutomatedSyncAdditionalFieldProvider implements AdditionalFieldProviderInt
      * Temporary compatibility layer between TYPO3 enumerations (v12) and native enumerations (v13)
      * TODO: remove once dropping compatibility with TYPO3 12
      *
-     * @param mixed $action
      * @return bool
      */
     protected function isAddAction(mixed $action): bool
     {
-        if ($action instanceof \TYPO3\CMS\Scheduler\Task\Enumeration\Action) {
-            return $action->equals(\TYPO3\CMS\Scheduler\Task\Enumeration\Action::ADD);
+        if ($action instanceof Action) {
+            return $action->equals(Action::ADD);
         }
 
         // @phpstan-ignore class.notFound
-        if ($action instanceof \TYPO3\CMS\Scheduler\SchedulerManagementAction) {
+        if ($action instanceof SchedulerManagementAction) {
             // @phpstan-ignore class.notFound
-            return $action->value === \TYPO3\CMS\Scheduler\SchedulerManagementAction::ADD->value;
+            return $action->value === SchedulerManagementAction::ADD->value;
         }
 
         // The action should really be only one of the 2 above, so return false if we land here...
@@ -213,19 +212,18 @@ class AutomatedSyncAdditionalFieldProvider implements AdditionalFieldProviderInt
      * Temporary compatibility layer between TYPO3 enumerations (v12) and native enumerations (v13)
      * TODO: remove once dropping compatibility with TYPO3 12
      *
-     * @param mixed $action
      * @return bool
      */
     protected function isEditAction(mixed $action): bool
     {
-        if ($action instanceof \TYPO3\CMS\Scheduler\Task\Enumeration\Action) {
-            return $action->equals(\TYPO3\CMS\Scheduler\Task\Enumeration\Action::EDIT);
+        if ($action instanceof Action) {
+            return $action->equals(Action::EDIT);
         }
 
         // @phpstan-ignore class.notFound
-        if ($action instanceof \TYPO3\CMS\Scheduler\SchedulerManagementAction) {
+        if ($action instanceof SchedulerManagementAction) {
             // @phpstan-ignore class.notFound
-            return $action->value === \TYPO3\CMS\Scheduler\SchedulerManagementAction::EDIT->value;
+            return $action->value === SchedulerManagementAction::EDIT->value;
         }
 
         // The action should really be only one of the 2 above, so return false if we land here...
