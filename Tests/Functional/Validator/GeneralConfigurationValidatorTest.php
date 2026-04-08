@@ -406,6 +406,5 @@ class GeneralConfigurationValidatorTest extends FunctionalTestCaseWithDatabaseTo
     public function tearDown(): void
     {
         parent::tearDown();
-        restore_error_handler();
     }
 }
