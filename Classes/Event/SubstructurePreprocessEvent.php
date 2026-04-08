@@ -25,38 +25,30 @@ use Cobweb\ExternalImport\Importer;
 final class SubstructurePreprocessEvent
 {
     /**
-     * @var Importer Back-reference to the calling Importer instance
+     * @param mixed[]|\DOMNodeList $substructure
      */
-    protected Importer $importer;
-
-    /**
-     * @var array|\DOMNodeList The substructure to handle
-     */
-    protected $substructure;
-
-    /**
-     * @var array The current substructure configuration
-     */
-    protected array $substructureConfiguration = [];
-
-    /**
-     * @var string The name of the column being handled
-     */
-    protected string $column = '';
-
-    /**
-     * @var string The type of data being handled ("array" or "xml")
-     */
-    protected string $dataType = '';
-
-    public function __construct($substructure, array $substructureConfiguration, string $column, string $dataType, Importer $importer)
-    {
-        $this->substructure = $substructure;
-        $this->substructureConfiguration = $substructureConfiguration;
-        $this->column = $column;
-        $this->dataType = $dataType;
-        $this->importer = $importer;
-    }
+    public function __construct(
+        /**
+         * @var array|\DOMNodeList The substructure to handle
+         */
+        protected $substructure,
+        /**
+         * @var array The current substructure configuration
+         */
+        protected array $substructureConfiguration,
+        /**
+         * @var string The name of the column being handled
+         */
+        protected string $column,
+        /**
+         * @var string The type of data being handled ("array" or "xml")
+         */
+        protected string $dataType,
+        /**
+         * @var Importer Back-reference to the calling Importer instance
+         */
+        protected Importer $importer
+    ) {}
 
     /**
      * @return Importer

@@ -95,7 +95,7 @@ class TemporaryKeyRepository
      * @param string $table Name of the table for which the key is used
      * @return bool
      */
-    public function hasTemporaryKey($value, string $table): bool
+    public function hasTemporaryKey(mixed $value, string $table): bool
     {
         return isset($this->temporaryKeys[$table][$value]);
     }
@@ -107,7 +107,7 @@ class TemporaryKeyRepository
      * @param string $table Name of the table for which the key is used
      * @return string
      */
-    public function getTemporaryKeyForValue($value, string $table): ?string
+    public function getTemporaryKeyForValue(mixed $value, string $table): ?string
     {
         return $this->temporaryKeys[$table][$value] ?? null;
     }
@@ -119,7 +119,7 @@ class TemporaryKeyRepository
      * @param string $key Value of the key
      * @param string $table Name of the table for which the key is used
      */
-    public function addTemporaryKey($value, string $key, string $table): void
+    public function addTemporaryKey(mixed $value, string $key, string $table): void
     {
         if (!isset($this->temporaryKeys[$table])) {
             $this->temporaryKeys[$table] = [];

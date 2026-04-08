@@ -16,9 +16,10 @@ namespace Cobweb\ExternalImport\Transformation;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
 use Cobweb\ExternalImport\ImporterAwareInterface;
 use Cobweb\ExternalImport\ImporterAwareTrait;
+use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFileNameException;
+use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -145,7 +146,7 @@ class ImageTransformation implements SingletonInterface, ImporterAwareInterface
             $file = GeneralUtility::getUrl($record[$index]);
             // If the file could not be fetched, report and throw an exception
             if ($file === false) {
-                throw new \TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException(
+                throw new ResourceDoesNotExistException(
                     $error = sprintf(
                         'File %s could not be fetched.',
                         $record[$index]
@@ -228,7 +229,7 @@ class ImageTransformation implements SingletonInterface, ImporterAwareInterface
                 $fileName,
                 $this->storageFolders[$parameters['storage']]
             );
-        } catch (\TYPO3\CMS\Core\Resource\Exception\ExistingTargetFileNameException $e) {
+        } catch (ExistingTargetFileNameException) {
             // A file with this name already exists, this is handled below
         }
 

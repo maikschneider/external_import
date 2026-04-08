@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace Cobweb\ExternalImport\Domain\Model;
 
 use Cobweb\ExternalImport\Domain\Repository\TcaRepositoryInterface;
+use Cobweb\ExternalImport\Exception\NoSuchColumnException;
 use Cobweb\ExternalImport\Importer;
 use Cobweb\ExternalImport\Utility\StepUtility;
 use Cobweb\Svconnector\Service\ConnectorBase;
@@ -327,14 +328,14 @@ class Configuration
      *
      * @param string $column Name of the column
      * @param bool $flag
-     * @throws \Cobweb\ExternalImport\Exception\NoSuchColumnException
+     * @throws NoSuchColumnException
      */
     public function setExcludedFromSavingFlagForColumn(string $column, bool $flag): void
     {
         if (array_key_exists($column, $this->columnConfiguration)) {
             $this->columnConfiguration[$column][self::DO_NOT_SAVE_KEY] = $flag;
         } else {
-            throw new \Cobweb\ExternalImport\Exception\NoSuchColumnException(
+            throw new NoSuchColumnException(
                 sprintf(
                     'The requested column (%s) does not exist.',
                     $column

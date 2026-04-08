@@ -170,7 +170,7 @@ class SchedulerRepository implements SingletonInterface
             }
 
             // Add the task to the list only if it is valid
-            if (get_class($task) === self::$taskClassName && (new TaskValidator())->isValid($task)) {
+            if ($task::class === self::$taskClassName && (new TaskValidator())->isValid($task)) {
                 $task->setScheduler();
                 $this->tasks[] = $task;
             }

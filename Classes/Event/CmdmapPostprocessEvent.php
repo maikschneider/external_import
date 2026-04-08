@@ -24,21 +24,16 @@ use Cobweb\ExternalImport\Importer;
  */
 final class CmdmapPostprocessEvent
 {
-    /**
-     * @var Importer Back-reference to the calling Importer instance
-     */
-    protected Importer $importer;
-
-    /**
-     * @var array List of records that were deleted (primary keys)
-     */
-    protected array $records = [];
-
-    public function __construct(array $records, Importer $importer)
-    {
-        $this->records = $records;
-        $this->importer = $importer;
-    }
+    public function __construct(
+        /**
+         * @var array List of records that were deleted (primary keys)
+         */
+        protected array $records,
+        /**
+         * @var Importer Back-reference to the calling Importer instance
+         */
+        protected Importer $importer
+    ) {}
 
     /**
      * @return Importer

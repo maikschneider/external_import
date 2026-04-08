@@ -49,10 +49,7 @@ class Data
         return $this->rawData;
     }
 
-    /**
-     * @param mixed $rawData
-     */
-    public function setRawData($rawData): void
+    public function setRawData(mixed $rawData): void
     {
         $this->rawData = $rawData;
     }
@@ -75,9 +72,8 @@ class Data
 
     /**
      * @param string $key
-     * @param mixed $data
      */
-    public function addExtraData(string $key, $data): void
+    public function addExtraData(string $key, mixed $data): void
     {
         $this->extraData[$key] = $data;
     }

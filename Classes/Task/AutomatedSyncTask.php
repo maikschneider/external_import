@@ -167,7 +167,7 @@ class AutomatedSyncTask extends AbstractTask
                     $this->index,
                     $configuration->getGeneralConfigurationProperty('priority')
                 );
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $info = '';
             }
         }

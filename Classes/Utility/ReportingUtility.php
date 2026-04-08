@@ -51,17 +51,11 @@ class ReportingUtility implements LoggerAwareInterface
      */
     protected array $reportingValues = [];
 
-    protected LogRepository $logRepository;
-
     protected Context $context;
 
-    protected BackendUserRepository $userRepository;
-
-    public function __construct(LogRepository $logRepository, Context $context, BackendUserRepository $userRepository)
+    public function __construct(protected LogRepository $logRepository, Context $context, protected BackendUserRepository $userRepository)
     {
-        $this->logRepository = $logRepository;
         $this->context = $context;
-        $this->userRepository = $userRepository;
     }
 
     /**
@@ -103,7 +97,7 @@ class ReportingUtility implements LoggerAwareInterface
                     $currentUserName,
                     (int)$currentUserId
                 );
-            } catch (AspectNotFoundException $e) {
+            } catch (AspectNotFoundException) {
                 $currentUser = '';
             }
             foreach ($messages as $status => $messageList) {
@@ -123,7 +117,7 @@ class ReportingUtility implements LoggerAwareInterface
                     ];
                     try {
                         $this->logRepository->insert($data);
-                    } catch (\Exception $e) {
+                    } catch (\Exception) {
                         // Nothing to do
                     }
                 }
@@ -139,7 +133,7 @@ class ReportingUtility implements LoggerAwareInterface
      * @param array $messages List of messages for the given table
      * @return string Formatted text of the report
      */
-    public function reportForTable(string $table, $index, array $messages): string
+    public function reportForTable(string $table, mixed $index, array $messages): string
     {
         $languageObject = $this->getLanguageObject();
         $report = sprintf(
@@ -225,7 +219,7 @@ class ReportingUtility implements LoggerAwareInterface
      * @param string $key Name of the key
      * @param mixed $value Value to store
      */
-    public function setValueForStep(string $step, string $key, $value): void
+    public function setValueForStep(string $step, string $key, mixed $value): void
     {
         if (!array_key_exists($step, $this->reportingValues)) {
             $this->reportingValues[$step] = [];

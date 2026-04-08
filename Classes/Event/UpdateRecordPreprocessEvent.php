@@ -24,27 +24,20 @@ use Cobweb\ExternalImport\Importer;
  */
 final class UpdateRecordPreprocessEvent
 {
-    /**
-     * @var Importer Back-reference to the calling Importer instance
-     */
-    protected Importer $importer;
-
-    /**
-     * @var array The record currently being prepared for update
-     */
-    protected array $record = [];
-
-    /**
-     * @var int The primary key of the record
-     */
-    protected int $uid;
-
-    public function __construct(int $uid, array $record, Importer $importer)
-    {
-        $this->uid = $uid;
-        $this->record = $record;
-        $this->importer = $importer;
-    }
+    public function __construct(
+        /**
+         * @var int The primary key of the record
+         */
+        protected int $uid,
+        /**
+         * @var array The record currently being prepared for update
+         */
+        protected array $record,
+        /**
+         * @var Importer Back-reference to the calling Importer instance
+         */
+        protected Importer $importer
+    ) {}
 
     /**
      * @return Importer

@@ -28,15 +28,7 @@ use Cobweb\ExternalImport\Importer;
  */
 abstract class AbstractCallContext
 {
-    /**
-     * @var Importer
-     */
-    protected Importer $importer;
-
-    public function __construct(Importer $importer)
-    {
-        $this->importer = $importer;
-    }
+    public function __construct(protected Importer $importer) {}
 
     /**
      * Outputs the debug data in accordance with the current call context.
@@ -45,5 +37,5 @@ abstract class AbstractCallContext
      * @param int $severity Degree of severity
      * @param mixed $data Additional data to display
      */
-    abstract public function outputDebug(string $message, int $severity, $data): void;
+    abstract public function outputDebug(string $message, int $severity, mixed $data): void;
 }

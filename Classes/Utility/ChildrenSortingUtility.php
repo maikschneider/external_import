@@ -29,15 +29,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ChildrenSortingUtility
 {
-    /**
-     * @var Importer
-     */
-    protected Importer $importer;
-
-    public function __construct(Importer $importer)
-    {
-        $this->importer = $importer;
-    }
+    public function __construct(protected Importer $importer) {}
 
     /**
      * Executes the sorting of the child records based on the given sorting information
@@ -96,7 +88,7 @@ class ChildrenSortingUtility
                         $queryBuilder->expr()->eq('uid', $uid)
                     )
                     ->executeStatement();
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->importer->debug(
                     sprintf(
                         'Could not update sorting information for record %d in table %s and field %s',

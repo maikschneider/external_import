@@ -23,7 +23,6 @@ use Cobweb\ExternalImport\Testing\FunctionalTestCaseWithDatabaseTools;
 use Cobweb\ExternalimportTest\UserFunction\Transformation;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -51,7 +50,6 @@ class ConfigurationRepositoryTest extends FunctionalTestCaseWithDatabaseTools
         parent::setUp();
         try {
             $this->initializeBackendUser();
-            Bootstrap::initializeLanguageObject();
 
             $this->subject = GeneralUtility::makeInstance(ConfigurationRepository::class);
         } catch (\Exception $e) {

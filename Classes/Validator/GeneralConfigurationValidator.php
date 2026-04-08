@@ -40,15 +40,10 @@ class GeneralConfigurationValidator
      * @var string Name of the table for which the configuration is checked
      */
     protected string $table;
-
-    protected ValidationResult $results;
-    protected StepUtility $stepUtility;
     protected ConnectorRegistry $connectorRegistry;
 
-    public function __construct(ValidationResult $result, StepUtility $stepUtility, ConnectorRegistry $connectorRegistry, protected TcaRepositoryInterface $tcaRepository)
+    public function __construct(protected ValidationResult $results, protected StepUtility $stepUtility, ConnectorRegistry $connectorRegistry, protected TcaRepositoryInterface $tcaRepository)
     {
-        $this->results = $result;
-        $this->stepUtility = $stepUtility;
         $this->connectorRegistry = $connectorRegistry;
     }
 
@@ -159,7 +154,7 @@ class GeneralConfigurationValidator
                 $this->connectorRegistry->getServiceForType(
                     $property
                 );
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $this->results->add(
                     'connector',
                     $this->getLanguageService()->sL(
@@ -182,7 +177,7 @@ class GeneralConfigurationValidator
     {
         try {
             $connectorService = $this->connectorRegistry->getServiceForType($connector, $property);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // NOTE: we do not report if connector was not found, because this is the task of validateConnectorProperty()
             return;
         }
@@ -218,7 +213,7 @@ class GeneralConfigurationValidator
                             ContextualFeedbackSeverity::NOTICE
                         );
                     }
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     $this->results->add(
                         'dataHandler',
                         $this->getLanguageService()->sL(
@@ -300,7 +295,7 @@ class GeneralConfigurationValidator
      *
      * @param mixed $property Property value
      */
-    public function validatePidProperty($property): void
+    public function validatePidProperty(mixed $property): void
     {
         $property = (int)$property;
         // TCA property rootLevel defaults to 0
@@ -356,7 +351,7 @@ class GeneralConfigurationValidator
      * @param mixed $property Property value
      * @param array $columns List of column configurations
      */
-    public function validateUseColumnIndexProperty($property, array $columns): void
+    public function validateUseColumnIndexProperty(mixed $property, array $columns): void
     {
         // If useColumnIndex is defined, it needs to match an existing index for the same table
         // If there's no column configuration using that index, issue an error

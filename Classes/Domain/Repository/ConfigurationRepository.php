@@ -330,7 +330,7 @@ class ConfigurationRepository
                                 $externalConfiguration['group'],
                             ];
                         } else {
-                            $externalConfiguration['groups'] = $externalConfiguration['groups'] ?? [];
+                            $externalConfiguration['groups'] ??= [];
                         }
                         // Store the base configuration
                         $configurationKey = GeneralUtility::makeInstance(ConfigurationKey::class);

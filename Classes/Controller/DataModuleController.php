@@ -16,12 +16,12 @@ namespace Cobweb\ExternalImport\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
 use Cobweb\ExternalImport\Domain\Repository\ConfigurationRepository;
 use Cobweb\ExternalImport\Domain\Repository\SchedulerRepository;
 use Cobweb\ExternalImport\Enum\CallType;
 use Cobweb\ExternalImport\Importer;
 use Cobweb\ExternalImport\Utility\CsvUtility;
+use Cobweb\ExternalImport\Validator\FrequencyValidator;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
@@ -36,6 +36,7 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
+use TYPO3\CMS\Extbase\Annotation\Validate;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -50,24 +51,18 @@ class DataModuleController extends ActionController
 
     protected PageRenderer $pageRenderer;
 
-    protected ConfigurationRepository $configurationRepository;
-
-    protected SchedulerRepository $schedulerRepository;
-
     protected IconFactory $iconFactory;
 
     public function __construct(
         ModuleTemplateFactory $moduleTemplateFactory,
         PageRenderer $pageRenderer,
         IconFactory $iconFactory,
-        ConfigurationRepository $configurationRepository,
-        SchedulerRepository $schedulerRepository
+        protected ConfigurationRepository $configurationRepository,
+        protected SchedulerRepository $schedulerRepository
     ) {
         $this->moduleTemplateFactory = $moduleTemplateFactory;
         $this->pageRenderer = $pageRenderer;
         $this->iconFactory = $iconFactory;
-        $this->configurationRepository = $configurationRepository;
-        $this->schedulerRepository = $schedulerRepository;
     }
 
     public function initializeAction(): void
@@ -95,19 +90,19 @@ class DataModuleController extends ActionController
                 $this->addFlashMessage(
                     LocalizationUtility::translate(
                         'no_configurations_warning',
-                        'external_import'
+                        'ExternalImport'
                     ),
                     '',
                     ContextualFeedbackSeverity::INFO
                 );
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 // The above code should really work, nothing to do if it doesn't
             }
         }
         // Try to get the task that performs synchronization for all configurations
         try {
             $fullSynchronizationTask = $this->schedulerRepository->fetchFullSynchronizationTask();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $fullSynchronizationTask = null;
         }
         $this->moduleTemplate->assignMultiple(
@@ -146,12 +141,12 @@ class DataModuleController extends ActionController
                 $this->addFlashMessage(
                     LocalizationUtility::translate(
                         'no_configurations_warning',
-                        'external_import'
+                        'ExternalImport'
                     ),
                     '',
                     ContextualFeedbackSeverity::INFO
                 );
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 // The above code should really work, nothing to do if it doesn't
             }
         }
@@ -225,7 +220,7 @@ class DataModuleController extends ActionController
             $this->addFlashMessage(
                 LocalizationUtility::translate(
                     'LLL:EXT:external_import/Resources/Private/Language/ExternalImport.xlf:exceptionOccurred',
-                    'external_import',
+                    'ExternalImport',
                     [
                         $e->getMessage(),
                         $e->getCode(),
@@ -283,7 +278,7 @@ class DataModuleController extends ActionController
             $this->addFlashMessage(
                 LocalizationUtility::translate(
                     'LLL:EXT:external_import/Resources/Private/Language/ExternalImport.xlf:exceptionOccurred',
-                    'external_import',
+                    'ExternalImport',
                     [
                         $e->getMessage(),
                         $e->getCode(),
@@ -342,7 +337,7 @@ class DataModuleController extends ActionController
             $this->addFlashMessage(
                 LocalizationUtility::translate(
                     'LLL:EXT:external_import/Resources/Private/Language/ExternalImport.xlf:exceptionOccurred',
-                    'external_import',
+                    'ExternalImport',
                     [
                         $e->getMessage(),
                         $e->getCode(),
@@ -405,8 +400,10 @@ class DataModuleController extends ActionController
      * @param int $group Scheduler task group
      * @param string $index Index for which to set an automated task for
      * @return ResponseInterface
+     * @return ResponseInterface
      * @\TYPO3\CMS\Extbase\Annotation\Validate(param="frequency", validator="\Cobweb\ExternalImport\Validator\FrequencyValidator")
      */
+    #[Validate(['param' => 'frequency', 'validator' => FrequencyValidator::class])]
     public function createTaskAction(
         string $table,
         string $frequency,
@@ -425,14 +422,14 @@ class DataModuleController extends ActionController
             $this->addFlashMessage(
                 LocalizationUtility::translate(
                     'autosync_saved',
-                    'external_import'
+                    'ExternalImport'
                 )
             );
         } catch (\Exception $e) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
                     'autosync_save_failed',
-                    'external_import',
+                    'ExternalImport',
                     [
                         $e->getMessage(),
                     ]
@@ -463,11 +460,11 @@ class DataModuleController extends ActionController
                     'groups' => $this->schedulerRepository->fetchAllGroups(),
                 ]
             );
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
                     'error_invalid_task',
-                    'external_import'
+                    'ExternalImport'
                 ),
                 '',
                 ContextualFeedbackSeverity::ERROR
@@ -485,8 +482,10 @@ class DataModuleController extends ActionController
      * @param string $frequency Automation frequency
      * @param int $group Scheduler task group
      * @return ResponseInterface
+     * @return ResponseInterface
      * @\TYPO3\CMS\Extbase\Annotation\Validate(param="frequency", validator="\Cobweb\ExternalImport\Validator\FrequencyValidator")
      */
+    #[Validate(['param' => 'frequency', 'validator' => FrequencyValidator::class])]
     public function updateTaskAction(int $uid, string $frequency, int $group): ResponseInterface
     {
         try {
@@ -502,14 +501,14 @@ class DataModuleController extends ActionController
             $this->addFlashMessage(
                 LocalizationUtility::translate(
                     'autosync_saved',
-                    'external_import'
+                    'ExternalImport'
                 )
             );
         } catch (\Exception $e) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
                     'autosync_save_failed',
-                    'external_import',
+                    'ExternalImport',
                     [
                         $e->getMessage(),
                     ]
@@ -534,14 +533,14 @@ class DataModuleController extends ActionController
             $this->addFlashMessage(
                 LocalizationUtility::translate(
                     'delete_done',
-                    'external_import'
+                    'ExternalImport'
                 )
             );
         } catch (\Exception $e) {
             $this->addFlashMessage(
                 LocalizationUtility::translate(
                     'delete_failed',
-                    'external_import',
+                    'ExternalImport',
                     [
                         $e->getMessage(),
                     ]
@@ -607,14 +606,14 @@ class DataModuleController extends ActionController
         // Link to synchronizable tables view
         $menu->addMenuItem(
             $menu->makeMenuItem()
-            ->setTitle(LocalizationUtility::translate('function_sync', 'external_import'))
+            ->setTitle(LocalizationUtility::translate('function_sync', 'ExternalImport'))
             ->setHref($this->uriBuilder->uriFor('listSynchronizable'))
             ->setActive($action === 'listSynchronizable')
         );
         // Link to non-synchronizable tables view
         $menu->addMenuItem(
             $menu->makeMenuItem()
-            ->setTitle(LocalizationUtility::translate('function_nosync', 'external_import'))
+            ->setTitle(LocalizationUtility::translate('function_nosync', 'ExternalImport'))
             ->setHref($this->uriBuilder->uriFor('listNonSynchronizable'))
             ->setActive($action === 'listNonSynchronizable')
         );
@@ -632,7 +631,7 @@ class DataModuleController extends ActionController
         $closeIcon = $this->iconFactory->getIcon('actions-close', Icon::SIZE_SMALL);
         $closeButton = $this->moduleTemplate->getDocHeaderComponent()->getButtonBar()->makeLinkButton()
             ->setIcon($closeIcon)
-            ->setTitle(LocalizationUtility::translate('back_to_list', 'external_import'))
+            ->setTitle(LocalizationUtility::translate('back_to_list', 'ExternalImport'))
             ->setHref(
                 $this->uriBuilder->uriFor($returnAction)
             );
@@ -656,7 +655,7 @@ class DataModuleController extends ActionController
             if ($numMessages > 5) {
                 array_splice($messageList, 5);
                 $messageList[] = sprintf(
-                    LocalizationUtility::translate('moreMessages', 'external_import'),
+                    LocalizationUtility::translate('moreMessages', 'ExternalImport'),
                     $numMessages
                 );
                 $messages[$severity] = $messageList;
@@ -670,7 +669,7 @@ class DataModuleController extends ActionController
                         ContextualFeedbackSeverity::tryFrom($severity),
                         $storeInSession
                     );
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     // Do nothing, just avoid crashing for failing to display a flash message
                 }
             }

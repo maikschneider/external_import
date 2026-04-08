@@ -38,16 +38,13 @@ class LogModuleController extends ActionController
 
     protected PageRenderer $pageRenderer;
 
-    protected LogRepository $logRepository;
-
     public function __construct(
         ModuleTemplateFactory $moduleTemplateFactory,
         PageRenderer $pageRenderer,
-        LogRepository $logRepository
+        protected LogRepository $logRepository
     ) {
         $this->moduleTemplateFactory = $moduleTemplateFactory;
         $this->pageRenderer = $pageRenderer;
-        $this->logRepository = $logRepository;
     }
 
     public function initializeAction(): void

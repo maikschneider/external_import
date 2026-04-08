@@ -133,7 +133,7 @@ class ArrayHandler implements DataHandlerInterface
                         } else {
                             $data[$referenceCounter][$columnName] = $theValue;
                         }
-                    } catch (\Exception $e) {
+                    } catch (\Exception) {
                         // Nothing to do, we ignore values that were not found
                     }
                 }
@@ -242,7 +242,7 @@ class ArrayHandler implements DataHandlerInterface
                 try {
                     $value = $this->getValue($item ?? [], $configuration);
                     $row[$key] = $value;
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     // Nothing to do, we ignore values that were not found
                 }
             }
@@ -371,10 +371,9 @@ class ArrayHandler implements DataHandlerInterface
      * Applies a condition (expressed as Symfony Expression Language) and returns the result as a boolean value.
      *
      * @param string $condition
-     * @param mixed $value
      * @return bool
      */
-    protected function applyCondition(string $condition, $value): bool
+    protected function applyCondition(string $condition, mixed $value): bool
     {
         if (is_array($value)) {
             $testValue = $value;

@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use Cobweb\ExternalImport\Domain\Model\BackendUser;
+
 return [
-    \Cobweb\ExternalImport\Domain\Model\BackendUser::class => [
+    BackendUser::class => [
         'tableName' => 'be_users',
         'properties' => [
             'userName' => [

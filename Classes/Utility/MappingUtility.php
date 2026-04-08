@@ -146,7 +146,7 @@ class MappingUtility implements ImporterAwareInterface
                             $mappingInformation,
                             $mappings
                         );
-                    } catch (\Exception $e) {
+                    } catch (\Exception) {
                         // Ignore unmapped values
                     }
                 }
@@ -242,7 +242,7 @@ class MappingUtility implements ImporterAwareInterface
      * @return mixed The matched value
      * @throws \UnexpectedValueException
      */
-    public function matchSingleField($externalValue, array $mappingInformation, array $mappingTable)
+    public function matchSingleField(mixed $externalValue, array $mappingInformation, array $mappingTable)
     {
         $returnValue = '';
         $function = $mappingInformation['matchMethod'];
