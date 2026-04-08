@@ -40,8 +40,8 @@
 		"ergebnis/composer-normalize": "~2.45.0",
 		"friendsofphp/php-cs-fixer": "^3.52",
 		"typo3/testing-framework": "^9.0",
-		"phpstan/phpstan": "^1.10",
-		"ssch/typo3-rector": "^2.13"
+		"phpstan/phpstan": "^1.10 || ^2.1",
+		"ssch/typo3-rector": "^2.13 || ^3.0"
 	},
 	"extra": {
 		"branch-alias": {

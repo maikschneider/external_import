@@ -34,7 +34,7 @@ return RectorConfig::configure()
     ->withSets([
         Typo3SetList::CODE_QUALITY,
         Typo3SetList::GENERAL,
-        Typo3LevelSetList::UP_TO_TYPO3_14,
+        Typo3LevelSetList::UP_TO_TYPO3_13,
     ])
     ->withImportNames(importShortClasses: false, removeUnusedImports: true)
     // To have a better analysis from PHPStan, we teach it here some more things
